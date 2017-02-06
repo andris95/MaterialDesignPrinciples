@@ -43,11 +43,66 @@ public class DetailActivity extends Activity {
     ImageView ivPhotoDetail;
 
     private String mURL;
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+                Log.d(TAG, "onSharedElementStart: ");
+            }
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                Log.d(TAG, "onSharedElementEnd: ");
+                isFirst = false;
+            }
+
+            @Override
+            public void onRejectSharedElements(List<View> rejectedSharedElements) {
+                super.onRejectSharedElements(rejectedSharedElements);
+                Log.d(TAG, "onRejectSharedElements: ");
+            }
+
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                Log.d(TAG, "onMapSharedElements: ");
+                /*Log.d(TAG, "onMapSharedElements: " + mIsReentering);
+                if (mIsReentering) {
+                    names.clear();
+                    sharedElements.clear();
+                }
+                mIsReentering = false;*/
+                if (!isFirst) {
+                    sharedElements.clear();
+                    names.clear();
+                }
+            }
+
+            @Override
+            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
+                Log.d(TAG, "onCaptureSharedElementSnapshot: ");
+                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
+            }
+
+            @Override
+            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
+                Log.d(TAG, "onCreateSnapshotView: ");
+                return super.onCreateSnapshotView(context, snapshot);
+            }
+
+            @Override
+            public void onSharedElementsArrived(List<String> sharedElementNames, List<View> sharedElements, OnSharedElementsReadyListener listener) {
+                super.onSharedElementsArrived(sharedElementNames, sharedElements, listener);
+                Log.d(TAG, "onSharedElementsArrived: ");
+            }
+        });
         setupEnterTransition();
         setupExitTransition();
         setContentView(R.layout.activity_details);
@@ -85,6 +140,14 @@ public class DetailActivity extends Activity {
         slide.excludeTarget(android.R.id.navigationBarBackground, true);
         slide.excludeTarget(R.id.tv_description_title, true);
         getWindow().setEnterTransition(slide);
+    }
+
+    private void setupExitTransition() {
+        Fade fade = new Fade();
+        fade.addTarget(ivPhotoDetail);
+        fade.addTarget(R.id.tv_description_title);
+        fade.addTarget(R.id.tv_description_text);
+        getWindow().setReenterTransition(fade);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-        setExitSharedElementCallback(new SharedElementCallback() {
+        setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
                 super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
