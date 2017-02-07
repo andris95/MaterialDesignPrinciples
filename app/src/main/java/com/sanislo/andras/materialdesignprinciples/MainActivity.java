@@ -13,9 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
     private String TAG = MainActivity.class.getSimpleName();
     public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
     public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
+    public static final String PHOTO_THREE = "https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg";
 
     @BindView(R.id.rv_photos_list)
     RecyclerView rvPhotosList;
@@ -42,9 +45,19 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        setupExitTransition();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setupAdapter();
+    }
+
+    private void setupExitTransition() {
+        Explode explode = new Explode();
+        explode.setInterpolator(AnimationUtils.loadInterpolator(this,
+                android.R.interpolator.linear_out_slow_in));
+        explode.setDuration(2000);
+        getWindow().setExitTransition(explode);
+        Log.d(TAG, "setupExitTransition: " + (getWindow().getEnterTransition() == null));
     }
 
     private void setupAdapter() {
@@ -74,7 +87,7 @@ public class MainActivity extends Activity {
             } else if (i % 3 == 1) {
                 photoList.add(PHOTO_TWO);
             } else {
-                photoList.add("https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg");
+                photoList.add(PHOTO_THREE);
             }
         }
         return photoList;

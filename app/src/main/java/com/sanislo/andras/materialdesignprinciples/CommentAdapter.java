@@ -1,0 +1,172 @@
+package com.sanislo.andras.materialdesignprinciples;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by root on 07.02.17.
+ */
+
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
+    private String TAG = CommentAdapter.class.getSimpleName();
+    private List<Comment> mComments;
+    private OnClickListener mOnClickListener;
+    private LayoutInflater mLayoutInflater;
+    private Context mContext;
+    private int mExpandedPosition = RecyclerView.NO_POSITION;
+
+    public CommentAdapter(Context context, List<Comment> comments) {
+        mContext = context;
+        mComments = comments;
+        mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public int getExpandedPosition() {
+        return mExpandedPosition;
+    }
+
+    public void setExpandedPosition(int expandedPosition) {
+        mExpandedPosition = expandedPosition;
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
+    }
+
+    @Override
+    public CommentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mLayoutInflater.inflate(R.layout.item_comment, parent, false);
+        return new CommentAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bind(mComments.get(position), position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mComments.size();
+    }
+
+    public interface OnClickListener {
+        void onClick(View view, int position);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private View mRootView;
+
+        private int mBodyTextColor = -1;
+        private int mTitleTextColor = -1;
+        private int mBackgroundColor = -1;
+
+        @BindView(R.id.iv_comment_author_avatar)
+        ImageView ivAuthorAvatar;
+
+        @BindView(R.id.tv_comment_author_name)
+        TextView tvAuthorName;
+
+        @BindView(R.id.tv_comment_text)
+        TextView tvCommentText;
+
+        @BindView(R.id.rl_comment_root)
+        RelativeLayout rlCommentRoot;
+
+        @BindView(R.id.rl_comment_footer)
+        RelativeLayout rlCommentFooter;
+
+        @BindView(R.id.rl_comment_body)
+        RelativeLayout rlCommentBody;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            mRootView = itemView;
+            ButterKnife.bind(this, mRootView);
+        }
+
+        public void bind(Comment comment, final int position) {
+            Glide.with(mContext)
+                    .load(comment.getPhotoUrl())
+                    .asBitmap()
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            if (mBodyTextColor == -1) {
+                                Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                    @Override
+                                    public void onGenerated(Palette palette) {
+                                        //work with the palette here
+                                        Palette.Swatch dominantSwatch = palette.getDominantSwatch();
+                                        Log.d(TAG, "onGenerated: " + dominantSwatch.getBodyTextColor() + " / " + dominantSwatch.getTitleTextColor());
+                                        Log.d(TAG, "onGenerated: " + dominantSwatch.getPopulation());
+                                        mBodyTextColor = dominantSwatch.getBodyTextColor();
+                                        mTitleTextColor = dominantSwatch.getTitleTextColor();
+                                        mBackgroundColor = dominantSwatch.getRgb();
+                                    }
+                                });
+                            }
+                            return false;
+                        }
+                    })
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(ivAuthorAvatar);
+            tvAuthorName.setText(comment.getAuthorName());
+            tvCommentText.setText(comment.getCommentText());
+            setCommentFooterVisibility(position);
+            mRootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnClickListener != null) {
+                        mOnClickListener.onClick(mRootView, position);
+                    }
+                }
+            });
+        }
+
+        private void setCommentFooterVisibility(int position) {
+            rlCommentFooter.setVisibility(position == mExpandedPosition ? View.VISIBLE : View.GONE);
+            if (position == mExpandedPosition) {
+                if (mTitleTextColor != -1) {
+                    tvCommentText.setTextColor(mBodyTextColor);
+                    tvAuthorName.setTextColor(mTitleTextColor);
+                    rlCommentBody.setBackgroundColor(mBackgroundColor);
+                    rlCommentFooter.setBackgroundColor(mBackgroundColor);
+                }
+            } else {
+                tvCommentText.setTextColor(Color.GRAY);
+                tvAuthorName.setTextColor(Color.GRAY);
+                rlCommentBody.setBackgroundColor(Color.WHITE);
+                rlCommentFooter.setBackgroundColor(Color.WHITE);
+            }
+        }
+    }
+}

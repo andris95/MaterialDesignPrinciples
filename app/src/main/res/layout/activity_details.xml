@@ -9,40 +9,62 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_photo"
+        <RelativeLayout
+            android:id="@+id/rv_detail_header"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
-            android:fitsSystemWindows="true"
-            tools:src="@drawable/joy_jennifer_lawrence_2015_105464_1920x1080"
-            android:transitionName="@string/transition_photo_item"/>
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_description_title"
-            android:layout_width="wrap_content"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_photo"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                tools:src="@drawable/joy_jennifer_lawrence_2015_105464_1920x1080"
+                android:transitionName="@string/transition_photo_item"/>
+
+            <TextView
+                android:id="@+id/tv_description_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:layout_below="@+id/iv_photo"
+                android:text="sudo chmod 777 -R"
+                android:lines="1"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textSize="36sp" />
+
+            <TextView
+                android:id="@+id/tv_description_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_below="@+id/tv_description_title"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/lorem"
+                android:lines="4"
+                android:ellipsize="end"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textSize="20sp"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_detail_comments"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:layout_below="@+id/iv_photo"
-            android:text="sudo chmod 777 -R"
-            android:lines="1"
-            android:fontFamily="sans-serif-light"
-            android:textAppearance="@android:style/TextAppearance.Material.Title"
-            android:textSize="36sp" />
+            android:layout_below="@+id/rv_detail_header">
 
-        <TextView
-            android:id="@+id/tv_description_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_below="@+id/tv_description_title"
-            android:lineSpacingMultiplier="1.2"
-            android:text="@string/lorem"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            android:textSize="20sp"
-            />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
     </RelativeLayout>
 </ScrollView>

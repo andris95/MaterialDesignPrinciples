@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_comment_root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <RelativeLayout
+        android:id="@+id/rl_comment_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_comment_author_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="8dp"
+            tools:src="@drawable/joy_jennifer_lawrence_2015_105464_1920x1080"/>
+
+        <TextView
+            android:id="@+id/tv_comment_author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            tools:text="Andras Sanislo"
+            android:layout_toRightOf="@+id/iv_comment_author_avatar"
+            android:layout_toEndOf="@+id/iv_comment_author_avatar"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_comment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_comment_author_name"
+            android:layout_toRightOf="@+id/iv_comment_author_avatar"
+            android:layout_toEndOf="@+id/iv_comment_author_avatar"
+            tools:text="@string/lorem"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_comment_body"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@+id/rl_comment_footer">
+
+        <ImageView
+            android:id="@+id/iv_like_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/heart"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/iv_share_comment"/>
+        <ImageView
+            android:id="@+id/iv_share_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/share"/>
+    </RelativeLayout>
+
+</RelativeLayout>

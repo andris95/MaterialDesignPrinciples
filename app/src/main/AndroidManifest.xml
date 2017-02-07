@@ -22,7 +22,7 @@
             android:theme="@style/AppTheme.Details">
         </activity>
         <!--<activity android:name=".DetailActivity" />-->
-
+        <activity android:name=".DemoActivity" />
     </application>
 
 </manifest>
