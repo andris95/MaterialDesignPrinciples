@@ -24,6 +24,7 @@ public class DemoActivity extends Activity {
     public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
     public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
     public static final String PHOTO_THREE = "https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg";
+    public static final String PHOTO_FOUR = "http://s.4pda.to/hGEtz12ABQwKm87gEi2F6ftmRKYeHtH5z1Qgbl.jpg";
 
     @BindView(R.id.rv_comments)
     RecyclerView rvComments;
@@ -47,6 +48,9 @@ public class DemoActivity extends Activity {
             } else if (i % 3 == 1) {
                 Comment comment = new Comment(PHOTO_ONE, "Tatara Adcv", getString(R.string.lorem_short));
                 comments.add(comment);
+            } else if (i % 3 == 2) {
+                Comment comment = new Comment(PHOTO_FOUR, "ZAXCdss ADdfadeqwe", getString(R.string.lorem_short));
+                comments.add(comment);
             } else {
                 Comment comment = new Comment(PHOTO_THREE, "QWezx ASDxcvdf", getString(R.string.lorem_short));
                 comments.add(comment);
@@ -59,8 +63,8 @@ public class DemoActivity extends Activity {
                 int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
                 mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
                 TransitionManager.beginDelayedTransition(rvComments);
-                mCommentAdapter.notifyDataSetChanged();
-                //mCommentAdapter.notifyItemChanged(position);
+                //mCommentAdapter.notifyDataSetChanged();
+                mCommentAdapter.notifyItemChanged(position);
             }
         });
         rvComments.setLayoutManager(new LinearLayoutManager(DemoActivity.this));

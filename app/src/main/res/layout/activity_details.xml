@@ -46,7 +46,6 @@
                 android:layout_below="@+id/tv_description_title"
                 android:lineSpacingMultiplier="1.2"
                 android:text="@string/lorem"
-                android:lines="4"
                 android:ellipsize="end"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textSize="20sp"
