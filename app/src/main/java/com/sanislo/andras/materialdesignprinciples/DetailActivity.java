@@ -1,17 +1,14 @@
 package com.sanislo.andras.materialdesignprinciples;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.SharedElementCallback;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -73,12 +70,6 @@ public class DetailActivity extends Activity {
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
                 Log.d(TAG, "onMapSharedElements: ");
-                /*Log.d(TAG, "onMapSharedElements: " + mIsReentering);
-                if (mIsReentering) {
-                    names.clear();
-                    sharedElements.clear();
-                }
-                mIsReentering = false;*/
                 if (!isFirst) {
                     sharedElements.clear();
                     names.clear();
@@ -104,7 +95,7 @@ public class DetailActivity extends Activity {
             }
         });
         setupEnterTransition();
-        setupExitTransition();
+        setupReenterTransition();
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         postponeEnterTransition();
@@ -142,7 +133,7 @@ public class DetailActivity extends Activity {
         getWindow().setEnterTransition(slide);
     }
 
-    private void setupExitTransition() {
+    private void setupReenterTransition() {
         Fade fade = new Fade();
         fade.addTarget(ivPhotoDetail);
         fade.addTarget(R.id.tv_description_title);

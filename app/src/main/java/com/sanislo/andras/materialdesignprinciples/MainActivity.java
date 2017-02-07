@@ -37,71 +37,14 @@ public class MainActivity extends Activity {
     RecyclerView rvPhotosList;
 
     private PhotosAdapter mPhotosAdapter;
-    private boolean mIsReentering;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-        setEnterSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
-                Log.d(TAG, "onSharedElementStart: ");
-            }
-
-            @Override
-            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-                Log.d(TAG, "onSharedElementEnd: ");
-            }
-
-            @Override
-            public void onRejectSharedElements(List<View> rejectedSharedElements) {
-                super.onRejectSharedElements(rejectedSharedElements);
-                Log.d(TAG, "onRejectSharedElements: ");
-            }
-
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                Log.d(TAG, "onMapSharedElements: ");
-                Log.d(TAG, "onMapSharedElements: " + mIsReentering);
-                if (mIsReentering) {
-                    names.clear();
-                    sharedElements.clear();
-                }
-                mIsReentering = false;
-            }
-
-            @Override
-            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
-                Log.d(TAG, "onCaptureSharedElementSnapshot: ");
-                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
-            }
-
-            @Override
-            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-                Log.d(TAG, "onCreateSnapshotView: ");
-                return super.onCreateSnapshotView(context, snapshot);
-            }
-
-            @Override
-            public void onSharedElementsArrived(List<String> sharedElementNames, List<View> sharedElements, OnSharedElementsReadyListener listener) {
-                super.onSharedElementsArrived(sharedElementNames, sharedElements, listener);
-                Log.d(TAG, "onSharedElementsArrived: ");
-            }
-        });
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setupAdapter();
-    }
-
-    @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        super.onActivityReenter(resultCode, data);
-        Log.d(TAG, "onActivityReenter: ");
-        mIsReentering = true;
     }
 
     private void setupAdapter() {
