@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import butterknife.ButterKnife;
  */
 
 public class DemoActivity extends Activity {
+    private String TAG = DemoActivity.class.getSimpleName();
     public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
     public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
     public static final String PHOTO_THREE = "https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg";
@@ -57,8 +59,8 @@ public class DemoActivity extends Activity {
                 int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
                 mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
                 TransitionManager.beginDelayedTransition(rvComments);
-                //mCommentAdapter.notifyDataSetChanged();
-                mCommentAdapter.notifyItemChanged(position);
+                mCommentAdapter.notifyDataSetChanged();
+                //mCommentAdapter.notifyItemChanged(position);
             }
         });
         rvComments.setLayoutManager(new LinearLayoutManager(DemoActivity.this));

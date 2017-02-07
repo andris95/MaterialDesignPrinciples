@@ -26,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by root on 07.02.17.
@@ -80,6 +81,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
         private View mRootView;
 
+        private int mPosition;
         private int mBodyTextColor = -1;
         private int mTitleTextColor = -1;
         private int mBackgroundColor = -1;
@@ -102,6 +104,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         @BindView(R.id.rl_comment_body)
         RelativeLayout rlCommentBody;
 
+        @BindView(R.id.iv_like_comment)
+        ImageView ivLike;
+
+        @BindView(R.id.iv_share_comment)
+        ImageView ivShare;
+
         ViewHolder(View itemView) {
             super(itemView);
             mRootView = itemView;
@@ -109,6 +117,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
 
         public void bind(Comment comment, final int position) {
+            mPosition = position;
+
             Glide.with(mContext)
                     .load(comment.getPhotoUrl())
                     .asBitmap()
@@ -131,6 +141,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                         mBodyTextColor = dominantSwatch.getBodyTextColor();
                                         mTitleTextColor = dominantSwatch.getTitleTextColor();
                                         mBackgroundColor = dominantSwatch.getRgb();
+
+                                        setData();
                                     }
                                 });
                             }
@@ -139,33 +151,33 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     })
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(ivAuthorAvatar);
-            tvAuthorName.setText(comment.getAuthorName());
-            tvCommentText.setText(comment.getCommentText());
-            setCommentFooterVisibility(position);
-            mRootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnClickListener != null) {
-                        mOnClickListener.onClick(mRootView, position);
-                    }
-                }
-            });
+
+            setCommentFooterVisibility(mPosition);
+        }
+
+        private void setData() {
+            tvAuthorName.setText(mComments.get(mPosition).getAuthorName());
+            tvCommentText.setText(mComments.get(mPosition).getCommentText());
+
+            tvCommentText.setTextColor(mBodyTextColor);
+            tvAuthorName.setTextColor(mTitleTextColor);
+
+            rlCommentRoot.setBackgroundColor(mBackgroundColor);
+
+            ivShare.setColorFilter(mBodyTextColor);
+            ivLike.setColorFilter(mBodyTextColor);
         }
 
         private void setCommentFooterVisibility(int position) {
             rlCommentFooter.setVisibility(position == mExpandedPosition ? View.VISIBLE : View.GONE);
-            if (position == mExpandedPosition) {
-                if (mTitleTextColor != -1) {
-                    tvCommentText.setTextColor(mBodyTextColor);
-                    tvAuthorName.setTextColor(mTitleTextColor);
-                    rlCommentBody.setBackgroundColor(mBackgroundColor);
-                    rlCommentFooter.setBackgroundColor(mBackgroundColor);
-                }
-            } else {
-                tvCommentText.setTextColor(Color.GRAY);
-                tvAuthorName.setTextColor(Color.GRAY);
-                rlCommentBody.setBackgroundColor(Color.WHITE);
-                rlCommentFooter.setBackgroundColor(Color.WHITE);
+            Log.d(TAG, "setCommentFooterVisibility: " + (rlCommentFooter.getVisibility() == View.VISIBLE));
+        }
+
+        @OnClick(R.id.rl_comment_root)
+        public void onClick() {
+            Log.d(TAG, "onClick: ");
+            if (mOnClickListener != null) {
+                mOnClickListener.onClick(mRootView, mPosition);
             }
         }
     }
