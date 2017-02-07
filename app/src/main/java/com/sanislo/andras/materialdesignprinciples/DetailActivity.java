@@ -11,11 +11,15 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeImageTransform;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -67,6 +71,7 @@ public class DetailActivity extends Activity {
         getWindow().setSharedElementReturnTransition(null); */
         setupEnterTransition();
         setupReenterTransition();
+        setupSharedElementEnterTransition();
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         postponeEnterTransition();
@@ -173,6 +178,16 @@ public class DetailActivity extends Activity {
                 Log.d(TAG, "onSharedElementsArrived: ");
             }
         });
+    }
+
+    private void setupSharedElementEnterTransition() {
+        TransitionSet transitionSet = new TransitionSet();
+        transitionSet.addTransition(new ChangeBounds());
+        transitionSet.addTransition(new ChangeImageTransform());
+        transitionSet.addTransition(new ChangeClipBounds());
+        transitionSet.addTransition(new ChangeBounds());
+        transitionSet.addTarget(R.id.iv_photo);
+        getWindow().setSharedElementEnterTransition(transitionSet);
     }
 
     private void setupEnterTransition() {

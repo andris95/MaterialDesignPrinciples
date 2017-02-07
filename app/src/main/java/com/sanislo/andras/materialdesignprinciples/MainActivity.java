@@ -91,18 +91,28 @@ public class MainActivity extends AppCompatActivity {
         mPhotosAdapter.setOnClickListener(new PhotosAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position, String url) {
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(MainActivity.this,
-                                view,
-                                getString(R.string.transition_photo_item));
-                intent.putExtra(DetailActivity.EXTRA_URL, url);
-                startActivity(intent, options.toBundle());
+               startDetailsActivityAnimating(view, url);
             }
         });
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         rvPhotosList.setLayoutManager(gridLayoutManager);
         rvPhotosList.setAdapter(mPhotosAdapter);
+    }
+
+    private void startDetailsActivity(String url) {
+        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_URL, url);
+        startActivity(intent);
+    }
+
+    private void startDetailsActivityAnimating(View sharedView, String url) {
+        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(MainActivity.this,
+                        sharedView,
+                        getString(R.string.transition_photo_item));
+        intent.putExtra(DetailActivity.EXTRA_URL, url);
+        startActivity(intent, options.toBundle());
     }
 
     private List<String> populateData() {
