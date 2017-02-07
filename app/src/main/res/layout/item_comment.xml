@@ -5,7 +5,9 @@
     android:id="@+id/rl_comment_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment_selector"
+    android:stateListAnimator="@animator/comment_selection">
 
     <RelativeLayout
         android:id="@+id/rl_comment_body"
@@ -44,7 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_comment_body"
-        android:visibility="gone"
         tools:visibility="visible"
         android:id="@+id/rl_comment_footer">
 

@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,7 +18,8 @@ import butterknife.ButterKnife;
  * Created by root on 07.02.17.
  */
 
-public class DemoActivity extends Activity {
+public class DemoSecondActivity extends Activity {
+
     private String TAG = DemoActivity.class.getSimpleName();
     public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
     public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
@@ -30,7 +30,7 @@ public class DemoActivity extends Activity {
     @BindView(R.id.rv_comments)
     RecyclerView rvComments;
 
-    private CommentAdapter mCommentAdapter;
+    private CommentColorAdapter mCommentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +60,8 @@ public class DemoActivity extends Activity {
                 comments.add(comment);
             }
         }
-        mCommentAdapter = new CommentAdapter(DemoActivity.this, comments);
-        mCommentAdapter.setOnClickListener(new CommentAdapter.OnClickListener() {
+        mCommentAdapter = new CommentColorAdapter(DemoSecondActivity.this, comments);
+        mCommentAdapter.setOnClickListener(new CommentColorAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
                 int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
@@ -72,7 +72,7 @@ public class DemoActivity extends Activity {
                 mCommentAdapter.notifyItemChanged(position);
             }
         });
-        rvComments.setLayoutManager(new LinearLayoutManager(DemoActivity.this));
+        rvComments.setLayoutManager(new LinearLayoutManager(DemoSecondActivity.this));
         ((SimpleItemAnimator) rvComments.getItemAnimator()).setSupportsChangeAnimations(false);
         rvComments.setAdapter(mCommentAdapter);
     }

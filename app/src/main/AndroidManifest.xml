@@ -23,6 +23,7 @@
         </activity>
         <!--<activity android:name=".DetailActivity" />-->
         <activity android:name=".DemoActivity" />
+        <activity android:name=".DemoSecondActivity" />
     </application>
 
 </manifest>
