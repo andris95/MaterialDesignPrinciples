@@ -66,18 +66,18 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        setContentView(R.layout.activity_details_with_toolbar);
         setTransitionCallback();
         /** Causes glitch...
-        getWindow().setSharedElementReturnTransition(null); */
+         getWindow().setSharedElementReturnTransition(null); */
         setupEnterTransition();
         setupReenterTransition();
         setupSharedElementEnterTransition();
-        setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         postponeEnterTransition();
         mURL = getIntent().getStringExtra(EXTRA_URL);
         loadImage();
-        //initComments();
+        initComments();
     }
 
     private void loadImage() {
@@ -100,27 +100,16 @@ public class DetailActivity extends Activity {
     }
 
     private void initComments() {
-        List<Comment> comments = new ArrayList<>();
-        for (int i = 0; i < 32; i++) {
-            if (i % 3 == 0) {
-                Comment comment = new Comment(PHOTO_TWO, "Jennifer Lawrence", getString(R.string.lorem_short));
-                comments.add(comment);
-            } else if (i % 3 == 1) {
-                Comment comment = new Comment(PHOTO_ONE, "Tatara Adcv", getString(R.string.lorem_short));
-                comments.add(comment);
-            } else {
-                Comment comment = new Comment(PHOTO_THREE, "QWezx ASDxcvdf", getString(R.string.lorem_short));
-                comments.add(comment);
-            }
-        }
-        mCommentAdapter = new CommentAdapter(DetailActivity.this, comments);
+        mCommentAdapter = new CommentAdapter(DetailActivity.this, Utils.populateComments(this));
         mCommentAdapter.setOnClickListener(new CommentAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
                 int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
                 mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
                 TransitionManager.beginDelayedTransition(rvComments);
-                mCommentAdapter.notifyDataSetChanged();
+                //mCommentAdapter.notifyDataSetChanged();
+                mCommentAdapter.notifyItemChanged(currentExpandedPositon);
+                mCommentAdapter.notifyItemChanged(position);
             }
         });
         rvComments.setLayoutManager(new LinearLayoutManager(DetailActivity.this));

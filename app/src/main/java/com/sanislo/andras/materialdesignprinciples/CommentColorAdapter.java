@@ -39,7 +39,7 @@ public class CommentColorAdapter extends RecyclerView.Adapter<CommentColorAdapte
             mContext = context;
             mComments = comments;
             mLayoutInflater = LayoutInflater.from(context);
-            }
+    }
 
     public int getExpandedPosition() {
             return mExpandedPosition;
