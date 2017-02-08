@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         rvPhotosList.addItemDecoration(new GridMarginDecoration());
         rvPhotosList.setLayoutManager(gridLayoutManager);
         rvPhotosList.setAdapter(mPhotosAdapter);
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+        Log.d(TAG, "onActivityReenter: ");
     }
 
     private void startDetailsActivity(String url) {

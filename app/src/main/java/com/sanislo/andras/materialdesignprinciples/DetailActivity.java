@@ -172,6 +172,12 @@ public class DetailActivity extends Activity {
         getWindow().setSharedElementEnterTransition(transition);
     }*/
 
+    @Override
+    public void finishAfterTransition() {
+        setResult(RESULT_OK);
+        super.finishAfterTransition();
+    }
+
     /**
      * Schedules the shared element transition to be started immediately
      * after the shared element has been measured and laid out within the

@@ -133,10 +133,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         private void setCommentFooterVisibility(int position) {
             boolean isExpanded = mExpandedPosition == position;
-            ivShare.setVisibility(position == mExpandedPosition ? View.VISIBLE : View.GONE);
-            ivLike.setVisibility(position == mExpandedPosition ? View.VISIBLE : View.GONE);
+            ivShare.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            ivLike.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             mRootView.setActivated(isExpanded);
-            Log.d(TAG, "setCommentFooterVisibility: " + (rlCommentFooter.getVisibility() == View.VISIBLE));
         }
 
         @OnClick(R.id.rl_comment_root)
