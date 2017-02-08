@@ -62,8 +62,7 @@ public class DetailActivity extends Activity {
         setContentView(R.layout.activity_details);
         //setTransitionCallback();
         setupEnterTransition();
-        /*setupReturnTransition();
-        setupReenterTransition();*/
+        //setSharedElementEnterTransition();
         ButterKnife.bind(this);
         postponeEnterTransition();
         mURL = getIntent().getStringExtra(EXTRA_URL);
@@ -168,6 +167,11 @@ public class DetailActivity extends Activity {
     private void setupReturnTransition() {
         Transition transition = TransitionHelper.getDetailActivityReturnTransition();
         getWindow().setReturnTransition(transition);
+    }
+
+    private void setSharedElementEnterTransition() {
+        Transition transition = TransitionHelper.getDetailActivityEnterSharedElementTransition(DetailActivity.this);
+        getWindow().setSharedElementEnterTransition(transition);
     }
 
     @Override
