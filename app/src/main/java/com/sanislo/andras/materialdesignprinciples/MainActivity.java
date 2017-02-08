@@ -24,9 +24,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
-    public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
-    public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
-    public static final String PHOTO_THREE = "https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -40,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setupExitTransition();
+        setupReenterTransition();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
@@ -70,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setExitTransition(transition);
     }
 
+    private void setupReenterTransition() {
+        Transition transition = TransitionHelper.getMainActivityReenterTransition(MainActivity.this);
+        getWindow().setReenterTransition(transition);
+    }
+
     private void setupAdapter() {
         mPhotosAdapter = new PhotosAdapter(MainActivity.this, Utils.populatePhotos());
         mPhotosAdapter.setOnClickListener(new PhotosAdapter.OnClickListener() {
@@ -78,7 +82,22 @@ public class MainActivity extends AppCompatActivity {
                startDetailsActivityAnimating(view, url);
             }
         });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                /* emulating https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B6Okdz75tqQsck9lUkgxNVZza1U/style_imagery_integration_scale1.png */
+                switch (position % 6) {
+                    case 5:
+                        return 3;
+                    case 3:
+                        return 2;
+                    default:
+                        return 1;
+                }
+            }
+        });
+        rvPhotosList.addItemDecoration(new GridMarginDecoration());
         rvPhotosList.setLayoutManager(gridLayoutManager);
         rvPhotosList.setAdapter(mPhotosAdapter);
     }

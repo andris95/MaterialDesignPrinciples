@@ -33,7 +33,7 @@ public class TransitionHelper {
         return slide;
     }
 
-    public static Transition getDetailActivityEnterSharedElementTransition(Context context) {
+    /*public static Transition getDetailActivityEnterSharedElementTransition(Context context) {
         TransitionSet transitionSet = new TransitionSet();
         transitionSet.addTransition(new ChangeBounds());
         transitionSet.addTransition(new ChangeImageTransform());
@@ -43,23 +43,23 @@ public class TransitionHelper {
         Transition arcMotionTransition = TransitionInflater.from(context).inflateTransition(R.transition.transition_arc_motion);
         transitionSet.addTransition(arcMotionTransition);
         return transitionSet;
-    }
+    }*/
 
-    public static Transition getDetailActivityReturnTransition() {
+    /*public static Transition getDetailActivityReturnTransition() {
         Fade fade = new Fade();
         fade.addTarget(R.id.iv_photo);
         fade.addTarget(R.id.tv_description_title);
         fade.addTarget(R.id.tv_description_text);
         return fade;
-    }
+    }*/
 
-    public static Transition getDetailActivityReenterTransition() {
+    /*public static Transition getDetailActivityReenterTransition() {
         Fade fade = new Fade();
         fade.addTarget(R.id.iv_photo);
         fade.addTarget(R.id.tv_description_title);
         fade.addTarget(R.id.tv_description_text);
         return fade;
-    }
+    }*/
 
     public static Transition getMainActivityExitTransition(Context context) {
         Explode explode = new Explode();
@@ -70,5 +70,17 @@ public class TransitionHelper {
                 android.R.interpolator.linear_out_slow_in));
         explode.setDuration(2000);
         return explode;
+    }
+
+    public static Transition getMainActivityReenterTransition(Context context) {
+        Slide slide = new Slide();
+        slide.setSlideEdge(Gravity.TOP);
+        slide.excludeTarget(R.id.toolbar, true);
+        slide.excludeTarget(android.R.id.statusBarBackground, true);
+        slide.excludeTarget(android.R.id.navigationBarBackground, true);
+        slide.setInterpolator(AnimationUtils.loadInterpolator(context,
+                android.R.interpolator.linear_out_slow_in));
+        slide.setDuration(2000);
+        return slide;
     }
 }

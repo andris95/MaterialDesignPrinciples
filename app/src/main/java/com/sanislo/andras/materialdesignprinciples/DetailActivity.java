@@ -59,10 +59,8 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        setContentView(R.layout.activity_details);
-        //setTransitionCallback();
+        setContentView(R.layout.activity_details_with_toolbar);
         setupEnterTransition();
-        //setSharedElementEnterTransition();
         ButterKnife.bind(this);
         postponeEnterTransition();
         mURL = getIntent().getStringExtra(EXTRA_URL);
@@ -164,7 +162,7 @@ public class DetailActivity extends Activity {
         getWindow().setEnterTransition(transition);
     }
 
-    private void setupReturnTransition() {
+    /*private void setupReturnTransition() {
         Transition transition = TransitionHelper.getDetailActivityReturnTransition();
         getWindow().setReturnTransition(transition);
     }
@@ -172,13 +170,7 @@ public class DetailActivity extends Activity {
     private void setSharedElementEnterTransition() {
         Transition transition = TransitionHelper.getDetailActivityEnterSharedElementTransition(DetailActivity.this);
         getWindow().setSharedElementEnterTransition(transition);
-    }
-
-    @Override
-    public void finishAfterTransition() {
-        setResult(RESULT_OK);
-        super.finishAfterTransition();
-    }
+    }*/
 
     /**
      * Schedules the shared element transition to be started immediately

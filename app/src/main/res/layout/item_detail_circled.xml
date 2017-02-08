@@ -9,7 +9,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_photo_detail"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:fitsSystemWindows="true"
         tools:src="@drawable/joy_jennifer_lawrence_2015_105464_1920x1080"

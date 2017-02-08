@@ -8,8 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--<style name="AppTheme.Main" parent="AppTheme">
+        <item name="android:windowReenterTransition">@transition/main_activity_reenter_transition</item>
+    </style>-->
+
     <style name="AppTheme.Details" parent="AppTheme">
         <item name="android:windowReturnTransition">@transition/details_return_transition</item>
+        <item name="android:windowReenterTransition">@transition/details_return_transition</item>
         <item name="android:windowSharedElementEnterTransition">@transition/details_activity_shared_enter_transition</item>
     </style>
 

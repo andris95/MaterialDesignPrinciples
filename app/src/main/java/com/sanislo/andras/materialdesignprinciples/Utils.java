@@ -40,6 +40,8 @@ public class Utils {
         return comments;
     }
 
+    public static final String PHOTO_SIX = "https://www.androidpolice.com/wp-content/uploads/2017/02/nexus2cee_games-02_thumb.png";
+
     public static List<String> populatePhotos() {
         List<String> photoList = new ArrayList<>();
         for (int i = 0; i < 32; i++) {
@@ -48,7 +50,7 @@ public class Utils {
             } else if (i % 3 == 1) {
                 photoList.add(PHOTO_TWO);
             } else {
-                photoList.add(PHOTO_THREE);
+                photoList.add(PHOTO_SIX);
             }
         }
         return photoList;
