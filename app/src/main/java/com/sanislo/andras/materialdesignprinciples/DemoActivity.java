@@ -6,11 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sanislo.andras.materialdesignprinciples.adapter.CommentAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

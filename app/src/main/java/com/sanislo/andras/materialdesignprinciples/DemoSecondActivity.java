@@ -8,8 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.transition.TransitionManager;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sanislo.andras.materialdesignprinciples.adapter.CommentColorAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

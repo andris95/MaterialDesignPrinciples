@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import com.sanislo.andras.materialdesignprinciples.adapter.PhotosAdapter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
