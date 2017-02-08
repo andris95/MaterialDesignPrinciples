@@ -82,6 +82,12 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                     .load(mPhotosList.get(position))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(ivPhotoDetail);
+            setTransitionName(position);
+        }
+
+        private void setTransitionName(int position) {
+            String transitionName = mContext.getString(R.string.transition_photo_item) + "_" + position;
+            ivPhotoDetail.setTransitionName(transitionName);
         }
     }
 }

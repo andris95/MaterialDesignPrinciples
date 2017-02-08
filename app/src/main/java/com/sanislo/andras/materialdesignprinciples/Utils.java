@@ -2,6 +2,8 @@ package com.sanislo.andras.materialdesignprinciples;
 
 import android.content.Context;
 
+import com.sanislo.andras.materialdesignprinciples.model.Comment;
+
 import java.util.ArrayList;
 import java.util.List;
 

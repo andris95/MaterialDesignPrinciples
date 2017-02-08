@@ -8,6 +8,8 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -24,6 +26,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sanislo.andras.materialdesignprinciples.adapter.CommentAdapter;
+import com.sanislo.andras.materialdesignprinciples.adapter.DetailFragmentPagerAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -36,119 +39,40 @@ import butterknife.OnClick;
  * Created by root on 06.02.17.
  */
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends AppCompatActivity {
     private String TAG = DetailActivity.class.getSimpleName();
-    public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String EXTRA_START_POSITION = "EXTRA_START_POSITION";
+    public static final String EXTRA_RETURN_POSITION = "EXTRA_RETURN_POSITION";
 
-    @BindView(R.id.iv_photo)
-    ImageView ivPhoto;
+    @BindView(R.id.vp_details)
+    ViewPager vpDetails;
 
-    @BindView(R.id.rv_comments)
-    RecyclerView rvComments;
-
-    private CommentAdapter mCommentAdapter;
-    private String mURL;
-    private boolean isFirst = true;
+    private int mStartPosition;
+    private int mReturnPosition;
+    private boolean mIsReturning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        setContentView(R.layout.activity_details_with_toolbar);
+        setContentView(R.layout.activity_details);
         setupEnterTransition();
         ButterKnife.bind(this);
         postponeEnterTransition();
-        mURL = getIntent().getStringExtra(EXTRA_URL);
-        loadImage();
-        initComments();
+
+        mStartPosition = getIntent().getIntExtra(EXTRA_START_POSITION, 0);
+        Log.d(TAG, "onCreate: mStartPosition: " + mStartPosition);
+        setupViewPager();
     }
 
-    private void loadImage() {
-        Glide.with(DetailActivity.this)
-                .load(mURL)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        startPostponedEnterTransition();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        scheduleStartPostponedTransition(ivPhoto);
-                        return false;
-                    }
-                })
-                .into(ivPhoto);
-    }
-
-    private void initComments() {
-        mCommentAdapter = new CommentAdapter(DetailActivity.this, Utils.populateComments(this));
-        mCommentAdapter.setOnClickListener(new CommentAdapter.OnClickListener() {
+    private void setupViewPager() {
+        vpDetails.setAdapter(new DetailFragmentPagerAdapter(Utils.populatePhotos(), getSupportFragmentManager()));
+        vpDetails.setCurrentItem(mStartPosition);
+        vpDetails.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
-            public void onClick(View view, int position) {
-                int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
-                mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
-                TransitionManager.beginDelayedTransition(rvComments);
-                //mCommentAdapter.notifyDataSetChanged();
-                mCommentAdapter.notifyItemChanged(currentExpandedPositon);
-                mCommentAdapter.notifyItemChanged(position);
-            }
-        });
-        rvComments.setLayoutManager(new LinearLayoutManager(DetailActivity.this));
-        rvComments.setNestedScrollingEnabled(false);
-        ((SimpleItemAnimator) rvComments.getItemAnimator()).setSupportsChangeAnimations(false);
-        rvComments.setAdapter(mCommentAdapter);
-    }
-
-    private void setTransitionCallback() {
-        setEnterSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
-                Log.d(TAG, "onSharedElementStart: ");
-            }
-
-            @Override
-            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-                Log.d(TAG, "onSharedElementEnd: ");
-                isFirst = false;
-            }
-
-            @Override
-            public void onRejectSharedElements(List<View> rejectedSharedElements) {
-                super.onRejectSharedElements(rejectedSharedElements);
-                Log.d(TAG, "onRejectSharedElements: ");
-            }
-
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                Log.d(TAG, "onMapSharedElements: ");
-                if (!isFirst) {
-                    sharedElements.clear();
-                    names.clear();
-                }
-            }
-
-            @Override
-            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
-                Log.d(TAG, "onCaptureSharedElementSnapshot: ");
-                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
-            }
-
-            @Override
-            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-                Log.d(TAG, "onCreateSnapshotView: ");
-                return super.onCreateSnapshotView(context, snapshot);
-            }
-
-            @Override
-            public void onSharedElementsArrived(List<String> sharedElementNames, List<View> sharedElements, OnSharedElementsReadyListener listener) {
-                super.onSharedElementsArrived(sharedElementNames, sharedElements, listener);
-                Log.d(TAG, "onSharedElementsArrived: ");
+            public void onPageSelected(int position) {
+                mReturnPosition = position;
             }
         });
     }
@@ -158,53 +82,12 @@ public class DetailActivity extends Activity {
         getWindow().setEnterTransition(transition);
     }
 
-    /*private void setupReturnTransition() {
-        Transition transition = TransitionHelper.getDetailActivityReturnTransition();
-        getWindow().setReturnTransition(transition);
-    }
-
-    private void setSharedElementEnterTransition() {
-        Transition transition = TransitionHelper.getDetailActivityEnterSharedElementTransition(DetailActivity.this);
-        getWindow().setSharedElementEnterTransition(transition);
-    }*/
-
     @Override
     public void finishAfterTransition() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_START_POSITION, mStartPosition);
+        intent.putExtra(EXTRA_RETURN_POSITION, mReturnPosition);
         setResult(RESULT_OK);
         super.finishAfterTransition();
-    }
-
-    /**
-     * Schedules the shared element transition to be started immediately
-     * after the shared element has been measured and laid out within the
-     * activity's view hierarchy. Some common places where it might make
-     * sense to call this method are:
-     *
-     * (1) Inside a Fragment's onCreateView() method (if the shared element
-     *     lives inside a Fragment hosted by the called Activity).
-     *
-     * (2) Inside a Picasso Callback object (if you need to wait for Picasso to
-     *     asynchronously load/scale a bitmap before the transition can begin).
-     *
-     * (3) Inside a LoaderCallback's onLoadFinished() method (if the shared
-     *     element depends on data queried by a Loader).
-     */
-    private void scheduleStartPostponedTransition(final View sharedElement) {
-        sharedElement.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
-                        Log.d(TAG, "onPreDraw: ");
-                        startPostponedEnterTransition();
-                        return true;
-                    }
-                });
-    }
-
-    @OnClick({R.id.iv_photo, R.id.tv_description_text})
-    public void onClick() {
-        Intent intent = new Intent(DetailActivity.this, DemoActivity.class);
-        startActivity(intent);
     }
 }

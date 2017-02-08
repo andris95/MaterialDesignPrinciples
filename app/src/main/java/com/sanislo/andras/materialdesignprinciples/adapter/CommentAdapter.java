@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sanislo.andras.materialdesignprinciples.Comment;
+import com.sanislo.andras.materialdesignprinciples.model.Comment;
 import com.sanislo.andras.materialdesignprinciples.R;
 
 import java.util.List;

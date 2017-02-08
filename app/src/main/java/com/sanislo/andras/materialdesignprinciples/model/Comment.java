@@ -1,4 +1,4 @@
-package com.sanislo.andras.materialdesignprinciples;
+package com.sanislo.andras.materialdesignprinciples.model;
 
 /**
  * Created by root on 07.02.17.

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        setupExitTransition();
+        //setupExitTransition();
         setupReenterTransition();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mPhotosAdapter.setOnClickListener(new PhotosAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position, String url) {
-               startDetailsActivityAnimating(view, url);
+               startDetailsActivityAnimating(view, url, position);
             }
         });
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
@@ -111,19 +111,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onActivityReenter: ");
     }
 
-    private void startDetailsActivity(String url) {
+    private void startDetailsActivity(int position, String url) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_URL, url);
         startActivity(intent);
     }
 
-    private void startDetailsActivityAnimating(View sharedView, String url) {
+    private void startDetailsActivityAnimating(View sharedView, String url, int position) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(MainActivity.this,
                         sharedView,
-                        getString(R.string.transition_photo_item));
-        intent.putExtra(DetailActivity.EXTRA_URL, url);
+                        sharedView.getTransitionName());
+        intent.putExtra(DetailActivity.EXTRA_START_POSITION, position);
         startActivity(intent, options.toBundle());
     }
 }
