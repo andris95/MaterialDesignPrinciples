@@ -40,7 +40,7 @@ public class TransitionHelper {
         explode.excludeTarget(android.R.id.navigationBarBackground, true);
         explode.setInterpolator(AnimationUtils.loadInterpolator(context,
                 android.R.interpolator.linear_out_slow_in));
-        explode.setDuration(2000);
+        explode.setDuration(context.getResources().getInteger(android.R.integer.config_longAnimTime));
         return explode;
     }
 
@@ -52,7 +52,7 @@ public class TransitionHelper {
         slide.excludeTarget(android.R.id.navigationBarBackground, true);
         slide.setInterpolator(AnimationUtils.loadInterpolator(context,
                 android.R.interpolator.linear_out_slow_in));
-        slide.setDuration(2000);
+        slide.setDuration(context.getResources().getInteger(android.R.integer.config_longAnimTime));
         return slide;
     }
 }
