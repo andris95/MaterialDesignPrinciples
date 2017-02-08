@@ -9,8 +9,7 @@
     </style>
 
     <style name="AppTheme.Details" parent="AppTheme">
-        <item name="android:windowReturnTransition">@transition/details_exit_transition</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/detail_photo_transition</item>
+        <item name="android:windowReturnTransition">@transition/details_return_transition</item>
     </style>
 
 </resources>

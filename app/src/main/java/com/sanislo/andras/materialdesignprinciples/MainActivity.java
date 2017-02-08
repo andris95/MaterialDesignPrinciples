@@ -1,31 +1,19 @@
 package com.sanislo.andras.materialdesignprinciples;
 
 
-import android.app.Activity;
-import android.app.SharedElementCallback;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.util.Log;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,16 +66,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupExitTransition() {
-        Explode explode = new Explode();
-        explode.setInterpolator(AnimationUtils.loadInterpolator(this,
-                android.R.interpolator.linear_out_slow_in));
-        explode.setDuration(2000);
-        getWindow().setExitTransition(explode);
-        Log.d(TAG, "setupExitTransition: " + (getWindow().getEnterTransition() == null));
+        Transition transition = TransitionHelper.getMainActivityExitTransition(MainActivity.this);
+        getWindow().setExitTransition(transition);
     }
 
     private void setupAdapter() {
-        mPhotosAdapter = new PhotosAdapter(MainActivity.this, populateData());
+        mPhotosAdapter = new PhotosAdapter(MainActivity.this, Utils.populatePhotos());
         mPhotosAdapter.setOnClickListener(new PhotosAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position, String url) {
@@ -113,19 +97,5 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.transition_photo_item));
         intent.putExtra(DetailActivity.EXTRA_URL, url);
         startActivity(intent, options.toBundle());
-    }
-
-    private List<String> populateData() {
-        List<String> photoList = new ArrayList<>();
-        for (int i = 0; i < 32; i++) {
-            if (i % 3 == 0) {
-                photoList.add(PHOTO_ONE);
-            } else if (i % 3 == 1) {
-                photoList.add(PHOTO_TWO);
-            } else {
-                photoList.add(PHOTO_THREE);
-            }
-        }
-        return photoList;
     }
 }

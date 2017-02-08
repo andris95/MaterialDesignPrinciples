@@ -39,4 +39,18 @@ public class Utils {
         }
         return comments;
     }
+
+    public static List<String> populatePhotos() {
+        List<String> photoList = new ArrayList<>();
+        for (int i = 0; i < 32; i++) {
+            if (i % 3 == 0) {
+                photoList.add(PHOTO_ONE);
+            } else if (i % 3 == 1) {
+                photoList.add(PHOTO_TWO);
+            } else {
+                photoList.add(PHOTO_THREE);
+            }
+        }
+        return photoList;
+    }
 }

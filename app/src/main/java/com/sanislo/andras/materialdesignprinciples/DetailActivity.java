@@ -14,18 +14,14 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.transition.ChangeBounds;
 import android.transition.ChangeClipBounds;
 import android.transition.ChangeImageTransform;
-import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -33,7 +29,6 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,12 +43,9 @@ import butterknife.OnClick;
 public class DetailActivity extends Activity {
     private String TAG = DetailActivity.class.getSimpleName();
     public static final String EXTRA_URL = "EXTRA_URL";
-    public static final String PHOTO_ONE = "https://wallpaperscraft.com/image/toyota_supra_side_view_light_97798_1280x720.jpg";
-    public static final String PHOTO_TWO = "https://wallpaperscraft.com/image/joy_jennifer_lawrence_2015_105464_1920x1080.jpg";
-    public static final String PHOTO_THREE = "https://wallpaperscraft.com/image/mountains_buildings_sky_peaks_snow_107559_1440x900.jpg";
 
     @BindView(R.id.iv_photo)
-    ImageView ivPhotoDetail;
+    ImageView ivPhoto;
 
     @BindView(R.id.rv_comments)
     RecyclerView rvComments;
@@ -66,13 +58,12 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-        setContentView(R.layout.activity_details_with_toolbar);
-        setTransitionCallback();
-        /** Causes glitch...
-         getWindow().setSharedElementReturnTransition(null); */
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        setContentView(R.layout.activity_details);
+        //setTransitionCallback();
         setupEnterTransition();
-        setupReenterTransition();
-        setupSharedElementEnterTransition();
+        /*setupReturnTransition();
+        setupReenterTransition();*/
         ButterKnife.bind(this);
         postponeEnterTransition();
         mURL = getIntent().getStringExtra(EXTRA_URL);
@@ -92,11 +83,11 @@ public class DetailActivity extends Activity {
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        scheduleStartPostponedTransition(ivPhotoDetail);
+                        scheduleStartPostponedTransition(ivPhoto);
                         return false;
                     }
                 })
-                .into(ivPhotoDetail);
+                .into(ivPhoto);
     }
 
     private void initComments() {
@@ -169,34 +160,14 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private void setupSharedElementEnterTransition() {
-        TransitionSet transitionSet = new TransitionSet();
-        transitionSet.addTransition(new ChangeBounds());
-        transitionSet.addTransition(new ChangeImageTransform());
-        transitionSet.addTransition(new ChangeClipBounds());
-        transitionSet.addTransition(new ChangeBounds());
-        transitionSet.addTarget(R.id.iv_photo);
-        getWindow().setSharedElementEnterTransition(transitionSet);
-    }
-
     private void setupEnterTransition() {
-        Slide slide = new Slide(Gravity.BOTTOM);
-        slide.setInterpolator(AnimationUtils.loadInterpolator(this,
-                android.R.interpolator.linear_out_slow_in));
-        slide.setDuration(getResources().getInteger(android.R.integer.config_longAnimTime));
-        slide.excludeTarget(android.R.id.statusBarBackground, true);
-        slide.excludeTarget(android.R.id.navigationBarBackground, true);
-        slide.excludeTarget(R.id.tv_description_title, true);
-        slide.excludeTarget(R.id.rl_detail_comments, true);
-        getWindow().setEnterTransition(slide);
+        Transition transition = TransitionHelper.getDetailActivityEnterTransition(DetailActivity.this);
+        getWindow().setEnterTransition(transition);
     }
 
-    private void setupReenterTransition() {
-        Fade fade = new Fade();
-        fade.addTarget(ivPhotoDetail);
-        fade.addTarget(R.id.tv_description_title);
-        fade.addTarget(R.id.tv_description_text);
-        getWindow().setReenterTransition(fade);
+    private void setupReturnTransition() {
+        Transition transition = TransitionHelper.getDetailActivityReturnTransition();
+        getWindow().setReturnTransition(transition);
     }
 
     @Override
