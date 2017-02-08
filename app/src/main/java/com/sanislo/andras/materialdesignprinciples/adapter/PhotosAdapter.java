@@ -57,7 +57,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         void onClick(View view, int position, String url);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private View mRootView;
 
         @BindView(R.id.iv_photo_detail)
@@ -88,6 +88,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         private void setTransitionName(int position) {
             String transitionName = mContext.getString(R.string.transition_photo_item) + "_" + position;
             ivPhotoDetail.setTransitionName(transitionName);
+        }
+
+        public View getPhotoView() {
+            return ivPhotoDetail;
         }
     }
 }

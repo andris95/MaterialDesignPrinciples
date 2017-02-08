@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import com.sanislo.andras.materialdesignprinciples.adapter.PhotosAdapter;
+
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,14 +40,18 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rvPhotosList;
 
     private PhotosAdapter mPhotosAdapter;
+    /** returned data from called activity's setResult() */
+    private Intent mData;
+    private int mStartedPosition;
+    private int mReturnedPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        //setupExitTransition();
         setupReenterTransition();
+        setupExitSharedElementCallback();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
@@ -65,6 +74,36 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /* When makeSceneTransitionAnimation(Activity, android.view.View, String) was used to start an Activity,
+    callback will be called to handle shared elements on the launching Activity.
+    Most calls will only come when returning from the started Activity.*/
+    private void setupExitSharedElementCallback() {
+        // if the data intent is null, then the activity is exiting
+        SharedElementCallback sharedElementCallback = new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                if (mData == null) {
+                    Log.d(TAG, "setupExitSharedElementCallback: exiting");
+                } else {
+                    if (mStartedPosition != mReturnedPosition) {
+                        //користувач зробив свайп
+                        //очистмо теперішні розшарені view-шки
+                        names.clear();
+                        sharedElements.clear();
+                        //добавимо правильну вюшку залежнy від returnedPosition
+                        String newTransitionName = getString(R.string.transition_photo_item) + "_" + mReturnedPosition;
+                        PhotosAdapter.ViewHolder viewHolder = (PhotosAdapter.ViewHolder) rvPhotosList.findViewHolderForAdapterPosition(mReturnedPosition);
+                        View newSharedView = viewHolder.getPhotoView();
+                        names.add(newTransitionName);
+                        sharedElements.put(newTransitionName, newSharedView);
+                    }
+                }
+            }
+        };
+        setExitSharedElementCallback(sharedElementCallback);
     }
 
     private void setupExitTransition() {
@@ -108,7 +147,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
-        Log.d(TAG, "onActivityReenter: ");
+        Log.d(TAG, "onActivityReenter: " + data.toString());
+        mData = data;
+        mStartedPosition = data.getIntExtra(DetailActivity.EXTRA_START_POSITION, 0);
+        mReturnedPosition = data.getIntExtra(DetailActivity.EXTRA_RETURN_POSITION, 0);
+        if (mStartedPosition != mReturnedPosition) {
+            rvPhotosList.scrollToPosition(mReturnedPosition);
+        }
+        postponeEnterTransition();
+        rvPhotosList.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                rvPhotosList.getViewTreeObserver().removeOnPreDrawListener(this);
+                rvPhotosList.requestLayout();
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
     }
 
     private void startDetailsActivity(int position, String url) {

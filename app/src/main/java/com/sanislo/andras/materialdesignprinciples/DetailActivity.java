@@ -47,6 +47,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.vp_details)
     ViewPager vpDetails;
 
+    private DetailFragmentPagerAdapter mDetailsFragmentPagerAdapter;
     private int mStartPosition;
     private int mReturnPosition;
     private boolean mIsReturning;
@@ -58,16 +59,19 @@ public class DetailActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_details);
         setupEnterTransition();
+        setupEnterSharedElementCallback();
         ButterKnife.bind(this);
         postponeEnterTransition();
 
         mStartPosition = getIntent().getIntExtra(EXTRA_START_POSITION, 0);
+        mReturnPosition = mStartPosition;
         Log.d(TAG, "onCreate: mStartPosition: " + mStartPosition);
         setupViewPager();
     }
 
     private void setupViewPager() {
-        vpDetails.setAdapter(new DetailFragmentPagerAdapter(Utils.populatePhotos(), getSupportFragmentManager()));
+        mDetailsFragmentPagerAdapter = new DetailFragmentPagerAdapter(Utils.populatePhotos(), getSupportFragmentManager());
+        vpDetails.setAdapter(mDetailsFragmentPagerAdapter);
         vpDetails.setCurrentItem(mStartPosition);
         vpDetails.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -82,12 +86,42 @@ public class DetailActivity extends AppCompatActivity {
         getWindow().setEnterTransition(transition);
     }
 
+    private void setupEnterSharedElementCallback() {
+        SharedElementCallback sharedElementCallback = new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                if (mIsReturning) {
+                    ImageView sharedElement = mDetailsFragmentPagerAdapter.getCurrentDetailFragment().getAlbumImage();
+                    if (sharedElement == null) {
+                        // If shared element is null, then it has been scrolled off screen and
+                        // no longer visible. In this case we cancel the shared element transition by
+                        // removing the shared element from the shared elements map.
+                        names.clear();
+                        sharedElements.clear();
+                    } else if (mStartPosition != mReturnPosition) {
+                        // If the user has swiped to a different ViewPager page, then we need to
+                        // remove the old shared element and replace it with the new shared element
+                        // that should be transitioned instead.
+                        names.clear();
+                        names.add(sharedElement.getTransitionName());
+                        sharedElements.clear();
+                        sharedElements.put(sharedElement.getTransitionName(), sharedElement);
+                    }
+                }
+            }
+        };
+        setEnterSharedElementCallback(sharedElementCallback);
+    }
+
     @Override
     public void finishAfterTransition() {
+        mIsReturning = true;
         Intent intent = new Intent();
         intent.putExtra(EXTRA_START_POSITION, mStartPosition);
         intent.putExtra(EXTRA_RETURN_POSITION, mReturnPosition);
-        setResult(RESULT_OK);
+        Log.d(TAG, "finishAfterTransition: " + mStartPosition + " / " + mReturnPosition);
+        setResult(RESULT_OK, intent);
         super.finishAfterTransition();
     }
 }
