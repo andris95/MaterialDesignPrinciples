@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
         mPhotosAdapter.setOnClickListener(new PhotosAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position, String url) {
-               startDetailsActivityAnimating(view, url, position);
+                //startDetailsActivity(position, url);
+                startDetailsActivityAnimating(view, url, position);
             }
         });
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
