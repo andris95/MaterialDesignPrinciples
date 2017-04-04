@@ -10,15 +10,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.transition.AutoTransition;
+import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -86,6 +90,7 @@ public class DetailFragment extends Fragment {
         Glide.with(this)
                 .load(mURL)
                 .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(new RequestListener<String, Bitmap>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
@@ -108,12 +113,7 @@ public class DetailFragment extends Fragment {
         mCommentAdapter.setOnClickListener(new CommentAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
-                int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
-                mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
-                TransitionManager.beginDelayedTransition(rvComments);
-                //mCommentAdapter.notifyDataSetChanged();
-                mCommentAdapter.notifyItemChanged(currentExpandedPositon);
-                mCommentAdapter.notifyItemChanged(position);
+                handleCommentClick(position);
             }
         });
         rvComments.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -121,6 +121,42 @@ public class DetailFragment extends Fragment {
         ((SimpleItemAnimator) rvComments.getItemAnimator()).setSupportsChangeAnimations(false);
         rvComments.setAdapter(mCommentAdapter);
     }
+
+    private void handleCommentClick(int position) {
+        int currentExpandedPositon = mCommentAdapter.getExpandedPosition();
+        mCommentAdapter.setExpandedPosition(currentExpandedPositon == position ? RecyclerView.NO_POSITION : position);
+        Transition transition = new AutoTransition();
+        transition.addListener(new TransitionListenerAdapter() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                super.onTransitionStart(transition);
+                rvComments.setOnTouchListener(touchEater);
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                super.onTransitionEnd(transition);
+                rvComments.setOnTouchListener(null);
+            }
+        });
+        TransitionManager.beginDelayedTransition(rvComments, transition);
+        //mCommentAdapter.notifyDataSetChanged();
+        if (currentExpandedPositon != RecyclerView.NO_POSITION) {
+            mCommentAdapter.notifyItemChanged(currentExpandedPositon);
+        }
+        mCommentAdapter.notifyItemChanged(position);
+    }
+
+    /**
+     * We run a transition to expand/collapse comments. Scrolling the RecyclerView while this is
+     * running causes issues, so we consume touch events while the transition runs.
+     */
+    View.OnTouchListener touchEater = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return true;
+        }
+    };
 
     /**
      * Schedules the shared element transition to be started immediately

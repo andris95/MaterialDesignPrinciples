@@ -21,6 +21,17 @@ import android.view.animation.AnimationUtils;
 
 public class TransitionHelper {
 
+    /**
+    Activity A’s exit transition determines how views in A are animated when A starts B.
+
+    Activity B’s enter transition determines how views in B are animated when A starts B.
+
+    Activity B’s return transition determines how views in B are animated when B returns to A.
+
+    Activity A’s reenter transition determines how views in A are animated when B returns to A.
+
+     */
+
     public static Transition getDetailActivityEnterTransition(Context context) {
         Slide slide = new Slide(Gravity.BOTTOM);
         slide.setInterpolator(AnimationUtils.loadInterpolator(context,

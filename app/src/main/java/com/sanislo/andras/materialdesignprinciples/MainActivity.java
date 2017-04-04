@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setupReenterTransition();
+        //setupExitTransition();
         setupExitSharedElementCallback();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
